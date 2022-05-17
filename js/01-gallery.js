@@ -12,7 +12,7 @@ function createImages(galleryItems) {
                 <img
                   class="gallery__image"
                   src="${preview}"
-                  data-source="large-image.jpg"
+                  data-source="${original}"
                   alt="${description}"
                 />
               </a>
@@ -23,8 +23,29 @@ function createImages(galleryItems) {
 
 containerGrig.addEventListener('click', onImageClick);
 function onImageClick(e) {
-    if (!e.target.classList.containerGrig('gallery__image')) {
-        return
-    }
-    console.log(e.target);
+  e.preventDefault();
+  if (e.target.nodeName !== 'IMG') {
+    return;
+  }
+  const originalImage = e.target.dataset.source;
+  modalFullImg(originalImage);
 } 
+
+function modalFullImg(link) {
+  const instance = basicLightbox.create(`<img src="${link}">`,
+    {
+      onShow: instance => window.addEventListener('keydown', onEscapePress),
+      onClose: instance => window.removeEventListener('keydown', onEscapePress)
+    });
+   instance.show();
+
+  function onEscapePress(event) {
+    if (event.key === 'Escape') {
+    instance.close();
+    window.removeEventListener('keydown', onEscapePress)
+  }
+}
+}
+
+
+
